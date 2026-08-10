@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de administración</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Panel privado para administrar el portafolio.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-dashboard">
+
+  <!-- ============ PANTALLA DE CONTRASEÑA ============ -->
+  <div class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <div class="login-badge">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M7 10V7a5 5 0 0110 0v3M6 10h12a1 1 0 011 1v8a1 1 0 01-1 1H6a1 1 0 01-1-1v-8a1 1 0 011-1z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="login-eyebrow">panel de administración</p>
+      <h1 class="login-title">Bienvenida</h1>
+      <p class="login-sub">Escribe tu contraseña para administrar tu portafolio.</p>
+      <div class="admin-row">
+        <label for="adminPass">Contraseña</label>
+        <input type="password" id="adminPass" autocomplete="current-password" placeholder="••••••">
+      </div>
+      <button class="btn btn-primary btn-block" id="adminLoginBtn" type="button">Entrar</button>
+      <p class="form-note" id="adminLoginNote"></p>
+    </div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="shell" id="adminShell" hidden>
+    <header class="shell-topbar">
+      <div class="shell-brand">
+        <span class="shell-dot"></span>
+        <div>
+          <p class="shell-brand-title">~/<span id="shellBrandName">tu-nombre</span></p>
+          <p class="shell-brand-sub">Panel de administración</p>
+        </div>
+      </div>
+      <div class="shell-top-actions">
+        <a href="index.html" class="btn btn-ghost btn-sm">← Ver mi página</a>
+        <button type="button" class="btn btn-ghost btn-sm" id="adminExport">Exportar datos</button>
+        <button type="button" class="btn btn-ghost btn-sm" id="adminLogout">Salir</button>
+      </div>
+    </header>
+
+    <div class="shell-body">
+      <!-- SIDEBAR -->
+      <aside class="shell-sidebar">
+        <p class="sidebar-caption">Secciones</p>
+        <nav class="admin-nav">
+          <button type="button" class="admin-nav-item active" data-tab="inicio"><span class="nav-num">00</span><span>Inicio</span></button>
+          <button type="button" class="admin-nav-item" data-tab="general"><span class="nav-num">01</span><span>General</span></button>
+          <button type="button" class="admin-nav-item" data-tab="sobre"><span class="nav-num">02</span><span>Sobre mí</span></button>
+          <button type="button" class="admin-nav-item" data-tab="habilidades"><span class="nav-num">03</span><span>Habilidades</span></button>
+          <button type="button" class="admin-nav-item" data-tab="proyectos"><span class="nav-num">04</span><span>Proyectos</span></button>
+          <button type="button" class="admin-nav-item" data-tab="formacion"><span class="nav-num">05</span><span>Formación</span></button>
+          <button type="button" class="admin-nav-item" data-tab="contacto"><span class="nav-num">06</span><span>Contacto</span></button>
+        </nav>
+        <div class="sidebar-tip">
+          <p>Consejo</p>
+          <small>Tus cambios se guardan en este navegador. Usa el botón "Guardar todos los cambios" y luego abre tu página.</small>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO -->
+      <main class="shell-main">
+
+        <!-- INICIO -->
+        <section class="page active" id="page-inicio">
+          <div class="page-head">
+            <div>
+              <h2>Hola, <span id="welcomeName"></span></h2>
+              <p>Desde aquí puedes administrar todo el contenido de tu portafolio.</p>
+            </div>
+          </div>
+          <div class="stat-grid">
+            <div class="stat-card"><p class="stat-num" id="statProjects">0</p><p class="stat-label">Proyectos publicados</p></div>
+            <div class="stat-card"><p class="stat-num" id="statFormation">0</p><p class="stat-label">Formación registrada</p></div>
+            <div class="stat-card"><p class="stat-num" id="statSkills">0</p><p class="stat-label">Grupos de habilidades</p></div>
+          </div>
+          <div class="quick-grid">
+            <button type="button" class="quick-card" data-goto="proyectos"><strong>Subir un proyecto</strong><small>Agrega tus proyectos con imagen, enlaces y descripción. Ya se muestran en tu página.</small></button>
+            <button type="button" class="quick-card" data-goto="general"><strong>Editar información</strong><small>Cambia tu nombre, la frase de presentación y las frases del inicio.</small></button>
+            <button type="button" class="quick-card" data-goto="contacto"><strong>Editar contacto</strong><small>Actualiza tu email, GitHub, LinkedIn y el texto de la sección de contacto.</small></button>
+          </div>
+        </section>
+
+        <!-- GENERAL -->
+        <section class="page" id="page-general">
+          <div class="page-head">
+            <div><h2>General</h2><p>La información principal de tu portafolio.</p></div>
+          </div>
+          <div class="form-card">
+            <div>
+              <h3>Nombre y presentación</h3>
+              <p class="form-card-sub">Esto aparece en la parte superior de tu página.</p>
+            </div>
+            <div class="admin-row">
+              <label for="aHeroName">Nombre completo</label>
+              <input type="text" id="aHeroName" placeholder="Tu Nombre Apellido">
+            </div>
+            <div class="admin-row">
+              <label for="aRoles">Frases que rotan en el inicio (una por línea)</label>
+              <textarea id="aRoles" rows="4"></textarea>
+            </div>
+            <div class="admin-row">
+              <label for="aTagline">Frase de presentación</label>
+              <textarea id="aTagline" rows="3"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- SOBRE MÍ -->
+        <section class="page" id="page-sobre">
+          <div class="page-head">
+            <div><h2>Sobre mí</h2><p>El texto de presentación personal.</p></div>
+          </div>
+          <div class="form-card">
+            <div>
+              <h3>Tu historia</h3>
+              <p class="form-card-sub">Cuéntale a quien visita tu página quién eres.</p>
+            </div>
+            <div class="admin-row">
+              <label for="aAbout1">Primer párrafo</label>
+              <textarea id="aAbout1" rows="5"></textarea>
+            </div>
+            <div class="admin-row">
+              <label for="aAbout2">Segundo párrafo</label>
+              <textarea id="aAbout2" rows="5"></textarea>
+            </div>
+            <div class="admin-row">
+              <label for="aAvailability">Disponibilidad</label>
+              <input type="text" id="aAvailability" placeholder="Disponible para trabajar — full-time / part-time">
+            </div>
+          </div>
+        </section>
+
+        <!-- HABILIDADES -->
+        <section class="page" id="page-habilidades">
+          <div class="page-head">
+            <div><h2>Habilidades</h2><p>Los grupos de habilidades que muestras en tu página.</p></div>
+          </div>
+          <div class="form-card">
+            <div>
+              <h3>Grupos de habilidades</h3>
+              <p class="form-card-sub">Edita el nombre de cada categoría y escribe una habilidad por línea.</p>
+            </div>
+            <div data-skills-wrap id="aSkillsWrap"></div>
+          </div>
+        </section>
+
+        <!-- PROYECTOS -->
+        <section class="page" id="page-proyectos">
+          <div class="page-head">
+            <div>
+              <h2>Mis proyectos</h2>
+              <p>Estos se muestran en tu página. Agrega, edita o elimina cuando quieras.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="newProjectBtn">+ Nuevo proyecto</button>
+          </div>
+
+          <div class="project-grid" id="adminProjectGrid"></div>
+
+          <!-- editor con vista previa -->
+          <div class="editor-wrap" id="projectEditor" hidden>
+            <div class="editor-grid">
+              <div class="editor-form">
+                <div class="editor-head">
+                  <h3 id="editorTitle">Nuevo proyecto</h3>
+                  <button type="button" class="editor-close" id="editorClose" aria-label="Cerrar">×</button>
+                </div>
+                <form class="admin-form" id="adminForm">
+                  <div class="admin-row">
+                    <label for="adminTitleInput">Nombre del proyecto *</label>
+                    <input type="text" id="adminTitleInput" placeholder="Ej: Tienda online">
+                  </div>
+                  <div class="admin-grid2">
+                    <div class="admin-row">
+                      <label for="adminKind">Etiqueta</label>
+                      <input type="text" id="adminKind" placeholder="Ej: Proyecto personal">
+                    </div>
+                    <div class="admin-row">
+                      <label for="adminDemo">Link demo</label>
+                      <input type="url" id="adminDemo" placeholder="https://...">
+                    </div>
+                  </div>
+                  <div class="admin-row">
+                    <label for="adminDesc">Descripción</label>
+                    <textarea id="adminDesc" rows="4" placeholder="¿Qué hace este proyecto?"></textarea>
+                  </div>
+                  <div class="admin-row">
+                    <label for="adminTags">Habilidades (separadas por coma)</label>
+                    <input type="text" id="adminTags" placeholder="Ej: React, Node.js, PostgreSQL">
+                  </div>
+                  <div class="admin-row">
+                    <label for="adminCode">Link código</label>
+                    <input type="url" id="adminCode" placeholder="https://github.com/tu-usuario/...">
+                  </div>
+                  <div class="admin-row">
+                    <label>Imagen del proyecto</label>
+                    <div class="drop-zone" id="dropZone">
+                      <input type="file" id="adminImageFile" accept="image/*">
+                      <p><strong>Arrastra tu imagen aquí</strong> o haz clic para elegirla</p>
+                      <p class="drop-zone-hint">También puedes pegar el enlace de una imagen:</p>
+                      <input type="url" id="adminImageUrl" placeholder="https://.../foto.png">
+                    </div>
+                  </div>
+                  <div class="editor-form-actions">
+                    <button type="submit" class="btn btn-primary" id="adminProjectSubmit">Guardar proyecto</button>
+                    <button type="button" class="btn btn-ghost" id="adminProjectCancel">Cancelar</button>
+                    <p class="form-note" id="adminNote"></p>
+                  </div>
+                </form>
+              </div>
+              <div class="editor-preview">
+                <p class="preview-label">Vista previa de la tarjeta</p>
+                <div class="preview-card-shell" id="editorPreview"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FORMACIÓN -->
+        <section class="page" id="page-formacion">
+          <div class="page-head">
+            <div><h2>Formación</h2><p>Estudios, certificaciones y cursos.</p></div>
+          </div>
+          <div class="admin-list" id="adminFormationList"></div>
+          <div class="form-card" id="formationFormCard">
+            <div>
+              <h3 id="formationFormTitle">Agregar formación</h3>
+              <p class="form-card-sub">Completa los campos y agrega tu formación a la línea de tiempo.</p>
+            </div>
+            <form class="admin-form" id="adminFormationForm">
+              <div class="admin-grid2">
+                <div class="admin-row">
+                  <label for="aFDate">Años</label>
+                  <input type="text" id="aFDate" placeholder="2022 — 2026">
+                </div>
+                <div class="admin-row">
+                  <label for="aFTitle">Título *</label>
+                  <input type="text" id="aFTitle" placeholder="Ingeniería en Informática">
+                </div>
+              </div>
+              <div class="admin-row">
+                <label for="aFPlace">Lugar</label>
+                <input type="text" id="aFPlace" placeholder="Universidad / plataforma">
+              </div>
+              <div class="admin-row">
+                <label for="aFDesc">Descripción</label>
+                <textarea id="aFDesc" rows="3"></textarea>
+              </div>
+              <div class="editor-form-actions">
+                <button type="submit" class="btn btn-primary" id="adminFormationSubmit">Agregar formación</button>
+                <button type="button" class="btn btn-ghost" id="adminFormationCancel" hidden>Cancelar edición</button>
+                <p class="form-note" id="adminFormationNote"></p>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- CONTACTO -->
+        <section class="page" id="page-contacto">
+          <div class="page-head">
+            <div><h2>Contacto</h2><p>La información para que puedan escribirte.</p></div>
+          </div>
+          <div class="form-card">
+            <div>
+              <h3>Tus datos de contacto</h3>
+              <p class="form-card-sub">Estos enlaces aparecen en el inicio, el footer y la sección de contacto.</p>
+            </div>
+            <div class="admin-row">
+              <label for="aContactEmail">Email</label>
+              <input type="email" id="aContactEmail" placeholder="tu@correo.com">
+            </div>
+            <div class="admin-grid2">
+              <div class="admin-row">
+                <label for="aContactGithub">Link GitHub</label>
+                <input type="url" id="aContactGithub" placeholder="https://github.com/tu-usuario">
+              </div>
+              <div class="admin-row">
+                <label for="aContactLinkedin">Link LinkedIn</label>
+                <input type="url" id="aContactLinkedin" placeholder="https://linkedin.com/in/tu-usuario">
+              </div>
+            </div>
+            <div class="admin-row">
+              <label for="aContactIntro">Texto de la sección de contacto</label>
+              <textarea id="aContactIntro" rows="4"></textarea>
+            </div>
+          </div>
+        </section>
+
+        <!-- guardar -->
+        <div class="save-actions">
+          <button class="btn btn-primary" id="adminSave" type="button">Guardar todos los cambios</button>
+          <a href="index.html" class="btn btn-ghost">Ver mi página</a>
+          <p class="form-note" id="adminSaveNote"></p>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

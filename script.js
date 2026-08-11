@@ -491,45 +491,6 @@ function renderAll() {
 }
 
 // ============================================
-// 9. BOTÓN EMAIL: copia el correo (no abre Gmail)
-// ============================================
-(function initEmailCopy() {
-  const toast = document.getElementById('copyToast');
-  let toastTimer = null;
-  const showToast = () => {
-    if (!toast) return;
-    toast.classList.add('show');
-    if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
-  };
-  const legacyCopy = (text, done) => {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); } catch (e) { /* sin permisos */ }
-    document.body.removeChild(ta);
-    done();
-  };
-  const copyText = (text) => new Promise((resolve) => {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(resolve, () => legacyCopy(text, resolve));
-    } else {
-      legacyCopy(text, resolve);
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="mailto:"]');
-    if (!a) return;
-    e.preventDefault();
-    const mail = (a.getAttribute('href') || '').replace(/^mailto:/, '').trim();
-    copyText(mail).then(showToast);
-  });
-})();
-// ============================================
 // 8. FONDO: cielo estrellado rosado (constelación)
 // ============================================
 (function initStars() {

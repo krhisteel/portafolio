@@ -35,14 +35,14 @@
    TEMA CLARO — rosa pastel (misma paleta, fondo claro)
    ============================================ */
 [data-theme="light"] {
-  --bg: #fdf2f7;
+  --bg: #fdf1f7;
   --bg-alt: #fff6fb;
   --surface: #ffffff;
-  --surface-2: #fbe3ef;
-  --border: #f2c8dc;
-  --text: #4a2b3d;
-  --text-dim: #8a6178;
-  --text-faint: #b394a7;
+  --surface-2: #fce7f1;
+  --border: #f0c6db;
+  --text: #3e2235;
+  --text-dim: #7e546d;
+  --text-faint: #a68498;
 
   --accent: #e0559f;
   --accent-dim: #c13f86;
@@ -51,19 +51,55 @@
   --accent-red: #e0486f;
 
   --gradient: linear-gradient(135deg, #ff9ecb 0%, #ff6bab 50%, #e0559f 100%);
-  --glow: 0 10px 40px -10px rgba(224, 85, 159, 0.25);
+  --glow: 0 10px 40px -10px rgba(224, 85, 159, 0.3);
 }
 [data-theme="light"] body {
   background:
-    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(224, 85, 159, 0.1), transparent 70%),
-    linear-gradient(180deg, #ffffff 0%, var(--bg) 45%, #f8e3ee 100%);
+    radial-gradient(ellipse 90% 60% at 50% 0%, rgba(224, 85, 159, 0.12), transparent 70%),
+    linear-gradient(180deg, #ffffff 0%, var(--bg) 45%, #f8e6ef 100%);
 }
-[data-theme="light"] body::before { opacity: 0.45; }
-[data-theme="light"] #bgStars { opacity: 0.22; }
-[data-theme="light"] .grid-overlay { opacity: 0.5; }
-[data-theme="light"] .nav { background: rgba(255, 247, 251, 0.82); }
-[data-theme="light"] .nav.scrolled { background: rgba(255, 255, 255, 0.96); }
+[data-theme="light"] body::before { opacity: 0.5; }
+[data-theme="light"] #bgStars { opacity: 0.25; }
+[data-theme="light"] .grid-overlay {
+  opacity: 0.6;
+  background-image:
+    linear-gradient(rgba(224, 85, 159, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(224, 85, 159, 0.09) 1px, transparent 1px);
+}
+[data-theme="light"] .nav { background: rgba(255, 249, 252, 0.85); }
+[data-theme="light"] .nav.scrolled { background: rgba(255, 255, 255, 0.97); }
 [data-theme="light"] ::selection { color: #fff; }
+/* chips de tecnologías: rosa profundo legible sobre blanco */
+[data-theme="light"] .tag-list li {
+  color: #c13f86;
+  background: rgba(224, 85, 159, 0.09);
+  border-color: rgba(224, 85, 159, 0.28);
+}
+/* insignias flotantes del hero: pastilla blanca */
+[data-theme="light"] .hero-badge {
+  color: #c13f86;
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(224, 85, 159, 0.35);
+  box-shadow: 0 6px 20px -8px rgba(224, 85, 159, 0.4);
+}
+/* tarjetas de proyecto: degradado y flecha claros */
+[data-theme="light"] .project-media::before {
+  background: linear-gradient(180deg, transparent 55%, rgba(255, 255, 255, 0.8));
+}
+[data-theme="light"] .project-media::after {
+  background: rgba(255, 255, 255, 0.95);
+  color: #e0559f;
+  border-color: rgba(224, 85, 159, 0.35);
+}
+/* mini-terminal de contacto */
+[data-theme="light"] .cpanel-echo {
+  background: rgba(224, 85, 159, 0.06);
+}
+/* fondo del modal admin más suave en claro */
+[data-theme="light"] .admin-overlay {
+  background: rgba(90, 30, 60, 0.45);
+  backdrop-filter: blur(6px);
+}
 
 /* ============================================
    RESET — quita los estilos por defecto del navegador
@@ -1587,30 +1623,6 @@ a, button, input, textarea, [role="button"] {
   transition: color 0.2s ease;
 }
 .footer-links a:hover { color: var(--accent); }
-
-/* notificación "Correo copiado" */
-.copy-toast {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translate(-50%, 14px);
-  z-index: 200;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: var(--accent);
-  background: rgba(23, 13, 20, 0.94);
-  border: 1px solid rgba(255, 158, 203, 0.45);
-  border-radius: 999px;
-  padding: 10px 22px;
-  box-shadow: var(--glow);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-.copy-toast.show {
-  opacity: 1;
-  transform: translate(-50%, 0);
-}
 
 /* ============================================
    ANIMACIONES DE SCROLL (reveal)

@@ -103,11 +103,40 @@ observeReveals(document);
 
 // ============================================
 // 4. NAV: fondo sólido al hacer scroll + menú móvil
+//    + barra de progreso de lectura + volver arriba
 // ============================================
 const nav = document.getElementById('nav');
+const scrollProgress = document.getElementById('scrollProgress');
+const backTop = document.getElementById('backTop');
+
 window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', window.scrollY > 20);
-});
+  if (scrollProgress) {
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    scrollProgress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+  if (backTop) backTop.classList.toggle('show', window.scrollY > 400);
+}, { passive: true });
+
+if (backTop) {
+  backTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  });
+}
+
+// tema claro/oscuro
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+  const applyTheme = (t) => {
+    document.documentElement.setAttribute('data-theme', t);
+    themeToggle.setAttribute('aria-pressed', t === 'light');
+  };
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try { localStorage.setItem('portafolio-theme', next); } catch (e) {}
+  });
+}
 
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
@@ -128,31 +157,55 @@ navLinks.querySelectorAll('a').forEach(link => {
 });
 
 // ============================================
-// 5. FORMULARIO DE CONTACTO (envío por WhatsApp)
+// 5. FORMULARIO DE CONTACTO (API + base de datos Vercel KV
+//    con copia al correo; respaldo por WhatsApp)
 // ============================================
-// El mensaje se abre en WhatsApp con tu número, ya rellenado.
-// CAMBIA ESTE NÚMERO por el tuyo (formato internacional, sin + ni espacios,
-// ej. Chile: 56912345678).
 const WHATSAPP_NUMBER = '56936621284';
 const WHATSAPP_NAME = 'Aileen Oyaneder';
 
 const contactForm = document.getElementById('contactForm');
 const formNote = document.getElementById('formNote');
 
-contactForm.addEventListener('submit', (e) => {
+function openWhatsApp(name, email, message) {
+  const body =
+    'Hola ' + WHATSAPP_NAME + ', soy ' + name +
+    ' (' + email + ').' +
+    '\n\n' + message;
+  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(body), '_blank', 'noopener');
+  formNote.textContent = '✓ Abriendo WhatsApp con tu mensaje…';
+}
+
+contactForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const name = document.getElementById('name').value.trim();
   const email = document.getElementById('email').value.trim();
   const message = document.getElementById('message').value.trim();
 
-  const body =
-    'Hola ' + WHATSAPP_NAME + ', soy ' + name +
-    ' (' + email + ').' +
-    '\n\n' + message;
+  const btn = contactForm.querySelector('button[type="submit"]');
+  const original = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'enviando…';
+  formNote.textContent = '';
 
-  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(body), '_blank', 'noopener');
-  formNote.textContent = '✓ Abriendo WhatsApp con tu mensaje…';
-  contactForm.reset();
+  try {
+    const r = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, message })
+    });
+    const d = await r.json();
+    if (!r.ok || !d.ok) throw new Error('api ' + r.status);
+    formNote.textContent = d.emailed
+      ? '✓ Mensaje enviado. ¡Gracias por escribirme!'
+      : '✓ Mensaje guardado. ¡Gracias por escribirme!';
+    contactForm.reset();
+  } catch (err) {
+    openWhatsApp(name, email, message);
+    contactForm.reset();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = original;
+  }
 });
 
 // ============================================
@@ -280,7 +333,7 @@ function projectCard(p) {
   if (p.demo) links += '<a href="' + esc(p.demo) + '" target="_blank" rel="noopener">↗ Demo en vivo</a>';
   if (p.code) links += '<a href="' + esc(p.code) + '" target="_blank" rel="noopener">Código fuente</a>';
   return (
-    '<article class="project-card reveal">' +
+    '<article class="project-card reveal"' + (p.demo && p.demo !== '#' ? ' data-demo="' + esc(p.demo) + '"' : '') + '>' +
       '<div class="project-media"><img src="' + image + '" alt="Captura de ' + esc(p.title) + '"></div>' +
       '<div class="project-body">' +
         '<div class="project-head">' +
@@ -299,6 +352,13 @@ function renderProjects() {
   const container = document.getElementById('userProjects');
   if (!container) return;
   container.innerHTML = data.projects.map(projectCard).join('');
+  // toda la tarjeta abre el enlace demo al hacer clic (los botones internos no se afectan)
+  container.onclick = (e) => {
+    if (e.target.closest('a')) return;
+    const card = e.target.closest('.project-card');
+    if (!card || !card.dataset.demo) return;
+    window.open(card.dataset.demo, '_blank', 'noopener');
+  };
 }
 
 function renderFormation() {
@@ -330,6 +390,7 @@ function renderContact() {
   };
   setLink('heroEmail', 'mailto:' + email);
   setLink('footerEmail', 'mailto:' + email);
+  setLink('ctaEmail', 'mailto:' + email);
   setLink('heroGithub', c.github || 'https://github.com/tu-usuario');
   setLink('footerGithub', c.github || 'https://github.com/tu-usuario');
   setLink('heroLinkedin', c.linkedin || 'https://linkedin.com/in/tu-usuario');
@@ -354,6 +415,48 @@ function renderFooter() {
   if (nameEl) nameEl.textContent = data.hero.name || 'Tu Nombre';
 }
 
+// contadores de perfil: calcula los números desde los datos reales
+function renderStats() {
+  const set = (id, n) => {
+    const el = document.getElementById(id);
+    if (el) el.dataset.count = String(n);
+  };
+  const yearsRaw = (data.formation || []).map(f => (String(f.date).match(/\d{4}/g) || []).map(Number)).flat();
+  const years = yearsRaw.length ? Math.max(...yearsRaw) - Math.min(...yearsRaw) : 0;
+  const techs = new Set();
+  (data.skills || []).forEach(s => (s.tags || []).forEach(t => techs.add(t)));
+  set('statYears', years || 4);
+  set('statProjects', (data.projects || []).length);
+  set('statTechs', techs.size);
+  set('statCerts', (data.formation || []).length);
+}
+
+// anima los contadores con cuenta ascendente cuando entran en pantalla
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseInt(el.dataset.count || '0', 10);
+    if (prefersReducedMotion) {
+      el.textContent = target;
+      return;
+    }
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        obs.unobserve(en.target);
+        const start = performance.now();
+        const dur = 900;
+        const tick = (now) => {
+          const p = Math.min(1, (now - start) / dur);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+    }, { threshold: 0.4 });
+    io.observe(el);
+  });
+}
+
 // si el usuario cambió su nombre en el panel, también se refleja en el logo
 function renderNavLogo() {
   const logoEl = document.getElementById('navLogoName');
@@ -376,6 +479,7 @@ function renderAll() {
   renderHero();
   renderNavLogo();
   renderAbout();
+  renderStats();
   renderSkills();
   renderProjects();
   renderFormation();
@@ -383,6 +487,7 @@ function renderAll() {
   renderFooter();
   syncRoles();
   observeReveals();
+  animateCounters();
 }
 
 // ============================================

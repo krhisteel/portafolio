@@ -114,7 +114,59 @@ function activateTab(name) {
   });
   if (name === 'proyectos') drawProjectsGrid();
   if (name === 'formacion') drawFormationList();
+  if (name === 'mensajes') loadMessages();
 }
+
+// ============================================
+// MENSAJES DEL FORMULARIO (API + base de datos)
+// ============================================
+function escMsg(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+async function loadMessages() {
+  const box = document.getElementById('messagesList');
+  if (!box) return;
+  box.innerHTML = '<p class="messages-empty">cargando…</p>';
+  try {
+    const r = await fetch('/api/contact');
+    const d = await r.json();
+    if (!r.ok || !d.ok) throw new Error('api ' + r.status);
+    if (!d.messages.length) {
+      box.innerHTML = '<p class="messages-empty">todavía no hay mensajes. Cuando alguien use el formulario de tu página, aparecerán aquí.</p>';
+      return;
+    }
+    box.innerHTML = d.messages.map(m => (
+      '<article class="msg-card">' +
+        '<div class="msg-head">' +
+          '<strong>' + escMsg(m.name) + '</strong>' +
+          '<a class="msg-email" href="mailto:' + escMsg(m.email) + '">' + escMsg(m.email) + '</a>' +
+          '<span class="msg-date">' + escMsg(new Date(m.date).toLocaleString('es-CL')) + '</span>' +
+          '<button type="button" class="msg-del" data-id="' + escMsg(m.id) + '" aria-label="Eliminar mensaje" title="Eliminar">×</button>' +
+        '</div>' +
+        '<p class="msg-text">' + escMsg(m.message) + '</p>' +
+      '</article>'
+    )).join('');
+  } catch (e) {
+    box.innerHTML = '<p class="messages-empty">no se pudo cargar. ¿La base de datos Vercel KV está creada y vinculada al proyecto?</p>';
+  }
+}
+
+document.getElementById('messagesRefresh').addEventListener('click', loadMessages);
+document.getElementById('messagesList').addEventListener('click', async (e) => {
+  const btn = e.target.closest('.msg-del');
+  if (!btn) return;
+  try {
+    await fetch('/api/contact', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: btn.dataset.id })
+    });
+  } catch (err) { /* si falla, se intenta igual recargar */ }
+  loadMessages();
+});
 
 document.querySelectorAll('.admin-nav-item').forEach(btn => {
   btn.addEventListener('click', () => activateTab(btn.dataset.tab));

@@ -397,6 +397,66 @@ body.admin-dashboard {
 }
 .drop-zone input[type='url']:focus { border-color: var(--accent-dim); outline: none; }
 
+/* ============================================
+   MENSAJES DEL FORMULARIO
+   ============================================ */
+.messages-list { display: flex; flex-direction: column; gap: 14px; }
+.messages-empty {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  padding: 18px 0;
+}
+.msg-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s ease;
+}
+.msg-card:hover { border-color: var(--accent-dim); }
+.msg-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.msg-head strong { color: var(--accent); font-family: var(--font-display); font-size: 0.9rem; }
+.msg-email { color: var(--text-dim); font-size: 0.82rem; }
+.msg-email:hover { color: var(--accent); text-decoration: underline; }
+.msg-date {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-faint);
+}
+.msg-del {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-faint);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.msg-del:hover {
+  color: #fff;
+  border-color: var(--accent-red);
+  background: var(--accent-red);
+}
+.msg-text {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 /* vista previa viva */
 .editor-preview { position: sticky; top: 120px; }
 .preview-label {

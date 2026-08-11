@@ -63,6 +63,7 @@
           <button type="button" class="admin-nav-item" data-tab="proyectos"><span class="nav-num">04</span><span>Proyectos</span></button>
           <button type="button" class="admin-nav-item" data-tab="formacion"><span class="nav-num">05</span><span>Formación</span></button>
           <button type="button" class="admin-nav-item" data-tab="contacto"><span class="nav-num">06</span><span>Contacto</span></button>
+          <button type="button" class="admin-nav-item" data-tab="mensajes"><span class="nav-num">07</span><span>Mensajes</span></button>
         </nav>
         <div class="sidebar-tip">
           <p>Consejo</p>
@@ -295,6 +296,17 @@
               <label for="aContactIntro">Texto de la sección de contacto</label>
               <textarea id="aContactIntro" rows="4"></textarea>
             </div>
+          </div>
+        </section>
+
+        <!-- MENSAJES -->
+        <section class="page" id="page-mensajes">
+          <div class="page-head">
+            <div><h2>Mensajes</h2><p>Lo que llega por el formulario de contacto, guardado en la base de datos.</p></div>
+            <button type="button" class="btn btn-ghost btn-sm" id="messagesRefresh">↻ Recargar</button>
+          </div>
+          <div id="messagesList" class="messages-list">
+            <p class="messages-empty">cargando…</p>
           </div>
         </section>
 

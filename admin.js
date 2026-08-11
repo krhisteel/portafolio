@@ -267,7 +267,7 @@ adminProjectGrid.addEventListener('click', (e) => {
   const editBtn = e.target.closest('.mini-edit');
   const delBtn = e.target.closest('.mini-delete');
   if (editBtn) {
-    startEditProject(editBtn.getAttribute('data-id'));
+    openProjectEditor(editBtn.getAttribute('data-id'));
     editorTitle.textContent = 'Editar proyecto';
     projectEditor.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
